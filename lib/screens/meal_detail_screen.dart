@@ -81,62 +81,88 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
           appBar: AppBar(
             title:Text('${selectedMeal.title}'),
           ),
-          body:SingleChildScrollView(
-              child: Column(children: <Widget>[
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  selectedMeal.imageUrl,
-                  fit: BoxFit.cover,
+          body: SingleChildScrollView(
+                child: Column(children: <Widget>[
+                Container(
+                  height: 300,
+                  width: double.infinity,
+                  child: Image.network(
+                    selectedMeal.imageUrl,
+                    fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                buildSectionTitle('Ingredients', context),
-                buildContainer(
-                  ListView.builder(
-                    itemBuilder: (ctx,index)=> Card(
-                      color:Theme.of(context).accentColor,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical:5,horizontal:10),
-                        child: Text(selectedMeal.ingredients[index],
-                                    style: TextStyle(fontWeight: FontWeight.bold,),
-                              ),
+                  buildSectionTitle('Ingredients', context),
+                  buildContainer(
+                    ListView.builder(
+                      itemBuilder: (ctx,index)=> Card(
+                        color:Theme.of(context).accentColor,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical:5,horizontal:10),
+                          child: Text(selectedMeal.ingredients[index],
+                                      style: TextStyle(fontWeight: FontWeight.bold,),
+                                ),
+                        ),
+                      ),
+                      itemCount: selectedMeal.ingredients.length,
+                    ),
+                  
+                  ),
+                    
+                  buildSectionTitle('Steps', context),
+                  buildContainer(ListView.builder(
+                    itemCount: selectedMeal.steps.length,
+                    itemBuilder: (ctx,index) => Column(
+                      children: <Widget>[
+                        ListTile(
+                          leading: CircleAvatar(child: Text('#${index+1}',style: TextStyle(color: Colors.black),),backgroundColor: Theme.of(context).accentColor,),
+                          title: Text(selectedMeal.steps[index]),),
+                          Divider(),
+                      ],
+                    )
                       ),
                     ),
-                    itemCount: selectedMeal.ingredients.length,
-                  ),
-                
+              ],
+              ),
+            ),
+          floatingActionButton: Container(
+            height: 60,
+            color:Theme.of(context).accentColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                    IconButton(
+                  icon: Icon(Icons.thumb_up,size: 40,), 
+                  //color: Theme.of(context).accentColor,
+                  onPressed: (){
+
+                  },
                 ),
-                  
-                buildSectionTitle('Steps', context),
-                buildContainer(ListView.builder(
-                  itemCount: selectedMeal.steps.length,
-                  itemBuilder: (ctx,index) => Column(
-                    children: <Widget>[
-                      ListTile(
-                        leading: CircleAvatar(child: Text('#${index+1}',style: TextStyle(color: Colors.black),),backgroundColor: Theme.of(context).accentColor,),
-                        title: Text(selectedMeal.steps[index]),),
-                        Divider(),
-                    ],
-                  )
-                    ),
-                  ),
-            ],
+                IconButton(
+                  icon: Icon(Icons.thumb_down,size: 40,), 
+                  //color: Theme.of(context).accentColor,
+                  onPressed: (){},
+                ),
+                IconButton(
+                  icon: Icon(Icons.share,size: 40,), 
+                  //color: Theme.of(context).accentColor,
+                  onPressed: (){},
+                ),
+                
+                Consumer<Meals>(
+                  builder: (ctx,meal,child) => IconButton(
+                  icon: Icon(selectedMeal.isFavorite ? Icons.favorite : Icons.favorite_border,size: 40,), 
+                  //color: Theme.of(context).accentColor,
+                  onPressed: () {
+                    setState(() {
+                      meal.toggleFavoriteStatus(selectedMeal.id,authData.token,authData.userId);  
+                    });
+                    
+                  }
+                ),
+                ),
+                  ],
             ),
           ),
-          floatingActionButton: Consumer<Meals>(
-              builder: (ctx,meal,child) => IconButton(
-              icon: Icon(selectedMeal.isFavorite ? Icons.favorite : Icons.favorite_border,size: 50,), 
-              color: Theme.of(context).accentColor,
-              onPressed: () {
-                setState(() {
-                  meal.toggleFavoriteStatus(selectedMeal.id,authData.token,authData.userId);  
-                });
-                
-              }
-            ),
-            child: Text(''),
-            ),
     );
   }
 }

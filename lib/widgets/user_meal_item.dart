@@ -23,7 +23,7 @@ class UserMealItem extends StatelessWidget {
             icon: Icon(Icons.delete),
             onPressed: (){
               try{
-                Provider.of<Meals>(context).deleteMeal(mealId);
+                Provider.of<Meals>(context,listen: false).deleteMeal(mealId);
               }catch(error){
                 showDialog(
                   context: context,

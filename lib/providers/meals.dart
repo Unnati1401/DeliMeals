@@ -83,7 +83,8 @@ class Meals with ChangeNotifier{
             'isVegan':meal.isVegan,
             'isVegetarian':meal.isVegetarian,
             'createId':userId,
-
+            'likes':0,
+            'dislikes':0,
             }),
         );
         final newMeal = Meal(
@@ -101,7 +102,7 @@ class Meals with ChangeNotifier{
           isVegan: meal.isVegan,
           isVegetarian: meal.isVegetarian,
           isFavorite: false,
-
+          
         );
         _mealsList.add(newMeal);
         notifyListeners();
@@ -265,6 +266,9 @@ class Meals with ChangeNotifier{
     catch(error){
       throw error;
     }
+  }
+  Future<void> like(String id){
+
   }
 
   

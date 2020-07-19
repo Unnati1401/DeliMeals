@@ -25,6 +25,8 @@ class Meal with ChangeNotifier{
   final bool isVegan;
   final bool isVegetarian;
   bool isFavorite;
+  int numberOfLikes;
+  int numberOfDislikes;
 
    Meal({
     @required this.id,
