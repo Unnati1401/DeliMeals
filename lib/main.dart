@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './screens/trending_screen.dart';
 import './screens/add_meal_screen.dart';
 import './screens/tabs_screen.dart';
 import './screens/meal_detail_screen.dart';
@@ -94,6 +95,7 @@ class _MyAppState extends State<MyApp> {
           SaveMeal.routeName: (ctx) => SaveMeal(),
           AuthScreen.routeName: (ctx) => AuthScreen(),
           UserMealsScreen.routeName: (ctx) => UserMealsScreen(),
+          TrendingScreen.routeName: (ctx) =>TrendingScreen(),
         },
         onGenerateRoute: (settings){
           

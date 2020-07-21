@@ -83,8 +83,9 @@ class Meals with ChangeNotifier{
             'isVegan':meal.isVegan,
             'isVegetarian':meal.isVegetarian,
             'createId':userId,
-            'likes':0,
-            'dislikes':0,
+            'numberOfLikes':0,
+            'numberOfDislikes':0,
+            'reviews':[],
             }),
         );
         final newMeal = Meal(
@@ -102,7 +103,9 @@ class Meals with ChangeNotifier{
           isVegan: meal.isVegan,
           isVegetarian: meal.isVegetarian,
           isFavorite: false,
-          
+          numberOfLikes: 0,
+          numberOfDislikes: 0,
+          reviews:[],
         );
         _mealsList.add(newMeal);
         notifyListeners();
@@ -158,6 +161,9 @@ class Meals with ChangeNotifier{
               isVegetarian:mealData['isVegetarian'],
               duration:mealData['duration'],
               isFavorite: favoriteData == null ? false : favoriteData[mealId] ?? false, 
+              numberOfLikes: mealData['numberOfLikes'],
+              numberOfDislikes: mealData['numberOfDislikes'],
+              reviews: List<String>.from(mealData['reviews']),
             ),
             
           );
@@ -187,7 +193,12 @@ class Meals with ChangeNotifier{
               isVegetarian:mealData['isVegetarian'],
               duration:mealData['duration'],
               isFavorite: favoriteData == null ? false : favoriteData[mealId] ?? false, 
-            ),);
+              numberOfLikes: mealData['numberOfLikes'],
+              numberOfDislikes: mealData['numberOfDislikes'],
+              reviews: List<String>.from(mealData['reviews']),
+            ),
+            
+            );
             
             loadedMeals.removeWhere((element) => (extractedData2['isGlutenFree']==true && element.isGlutenFree==false||
                       extractedData2['isLactoseFree']==true && element.isLactoseFree==false||
@@ -204,7 +215,8 @@ class Meals with ChangeNotifier{
       catch(error){
         throw error;
       }
-      _mealsList.forEach((element) {print(element.title);});
+      _mealsList.forEach((element) {print(element.title);print(element.numberOfLikes);});
+
     }
 
     Future<void> deleteMeal(String id) async{
@@ -267,9 +279,68 @@ class Meals with ChangeNotifier{
       throw error;
     }
   }
-  Future<void> like(String id){
-
+  Future<void> like(String id) async{
+    final url = 'https://mealsapp-8267e.firebaseio.com/meals/$id/numberOfLikes.json?auth=$authToken';
+    final mealIndex = _mealsList.indexWhere((element) => element.id==id);
+    print(mealIndex);
+    Meal meal = _mealsList[mealIndex];
+    print(meal.numberOfLikes);
+    meal.numberOfLikes = meal.numberOfLikes + 1;
+    
+    notifyListeners();   
+    //print(meal);
+    /*if(mealIndex < 0)
+    {
+      return;
+    }*/
+    try{
+      final response = await http.put(
+        url,
+        body: json.encode(
+          meal.numberOfLikes,
+        ),
+      );
+      if (response.statusCode >= 400) {
+        meal.numberOfLikes = meal.numberOfLikes - 1;
+        
+      }
+    }
+        catch (error) {
+          meal.numberOfLikes = meal.numberOfLikes - 1;
+          throw error;
+        }
   }
 
+  Future<void> dislike(String id) async{
+    final url = 'https://mealsapp-8267e.firebaseio.com/meals/$id/numberOfDislikes.json?auth=$authToken';
+    final mealIndex = _mealsList.indexWhere((element) => element.id==id);
+    print(mealIndex);
+    Meal meal = _mealsList[mealIndex];
+    print(meal.numberOfDislikes);
+    meal.numberOfDislikes = meal.numberOfDislikes + 1;
+    
+    notifyListeners();   
+    //print(meal);
+    /*if(mealIndex < 0)
+    {
+      return;
+    }*/
+    try{
+      final response = await http.put(
+        url,
+        body: json.encode(
+          meal.numberOfDislikes,
+        ),
+      );
+      if (response.statusCode >= 400) {
+        meal.numberOfDislikes = meal.numberOfDislikes - 1;
+        
+      }
+    }
+        catch (error) {
+          meal.numberOfDislikes = meal.numberOfDislikes - 1;
+          throw error;
+        }
+  }
   
 } 

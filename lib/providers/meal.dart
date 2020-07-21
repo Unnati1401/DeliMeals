@@ -27,6 +27,7 @@ class Meal with ChangeNotifier{
   bool isFavorite;
   int numberOfLikes;
   int numberOfDislikes;
+  List<String> reviews;
 
    Meal({
     @required this.id,
@@ -43,6 +44,9 @@ class Meal with ChangeNotifier{
     @required this.isVegan,
     @required this.isVegetarian,
     this.isFavorite,
+    this.numberOfLikes,
+    this.numberOfDislikes,
+    this.reviews
   });
 
     

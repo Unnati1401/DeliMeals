@@ -93,7 +93,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     final filtersProvider = Provider.of<Filters>(context);
     
     final authData = Provider.of<Auth>(context);
-    return _isLoading ? Center(child: CircularProgressIndicator(backgroundColor: Colors.white,)) : Scaffold(
+    return _isLoading ? Center(child: CircularProgressIndicator()) : Scaffold(
       drawer: MainDrawer(),
       appBar: AppBar(
         title: Text('Your filters'),
