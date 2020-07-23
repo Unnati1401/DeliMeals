@@ -1,6 +1,8 @@
 # mealsApp
 
 A new Flutter project.
+This is an app designed for foodies to provide better access to innovative and creative recipes.
+Currently in building state.
 
 ## Getting Started
 
