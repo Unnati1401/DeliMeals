@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../providers/meals.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth.dart';
+import 'package:getwidget/getwidget.dart';
 
 class MealDetailScreen extends StatefulWidget {
   static const routeName = '/meal-detail';
@@ -12,6 +13,7 @@ class MealDetailScreen extends StatefulWidget {
 
 class _MealDetailScreenState extends State<MealDetailScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  var _reviewController = TextEditingController();
 
   Widget buildSectionTitle(String text, BuildContext context) {
     return Container(
@@ -83,10 +85,11 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
             Container(
               height: 300,
               width: double.infinity,
-              child: Image.network(
-                selectedMeal.imageUrl,
-                fit: BoxFit.cover,
-              ),
+              child: GFAvatar(
+                  backgroundImage: NetworkImage(
+                    selectedMeal.imageUrl,
+                  ),
+                  shape: GFAvatarShape.square),
             ),
             buildSectionTitle('Ingredients', context),
             buildContainer(
@@ -167,9 +170,16 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
               ),
               //color: Theme.of(context).accentColor,
               onPressed: () async {
+                _scaffoldKey.currentState.hideCurrentSnackBar();
                 await Provider.of<Meals>(context, listen: false)
                     .like(selectedMeal.id);
-                final snackBar = SnackBar(content: Text('You liked the meal'));
+                final snackBar = SnackBar(
+                    elevation: 6.0,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    content: Text('You liked the meal'));
                 _scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
@@ -180,10 +190,16 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
               ),
               //color: Theme.of(context).accentColor,
               onPressed: () async {
+                _scaffoldKey.currentState.hideCurrentSnackBar();
                 await Provider.of<Meals>(context, listen: false)
                     .dislike(selectedMeal.id);
-                final snackBar =
-                    SnackBar(content: Text('You disliked the meal'));
+                final snackBar = SnackBar(
+                    elevation: 6.0,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    content: Text('You disliked the meal'));
                 _scaffoldKey.currentState.showSnackBar(snackBar);
               },
             ),
@@ -210,6 +226,31 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                       child: Form(
                         child: ListView(
                           children: <Widget>[
+                            Column(children: [
+                              Stack(children: [
+                                Container(
+                                  width: double.infinity,
+                                  height: 56.0,
+                                  child: Center(
+                                    child: Text("Add Review",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                ),
+                                Positioned(
+                                    left: 0.0,
+                                    top: 0.0,
+                                    child: IconButton(
+                                        icon: Icon(Icons.arrow_back),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        }))
+                              ]),
+                            ]),
+                            SizedBox(
+                              height: 30,
+                            ),
                             TextFormField(
                               decoration: InputDecoration(
                                 labelText: 'Your name',
@@ -222,7 +263,7 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                               keyboardType: TextInputType.multiline,
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
                             TextFormField(
                               decoration: InputDecoration(
@@ -235,24 +276,55 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                               ),
                               maxLines: 3,
                               keyboardType: TextInputType.multiline,
+                              controller: _reviewController,
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
-                            RaisedButton(
-                              color: Colors.lightBlue,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                                //side: BorderSide(color: Colors.red)
-                              ),
-                              onPressed: () {},
-                              textColor: Colors.white,
-                              padding: const EdgeInsets.all(0.0),
-                              child: Container(
-                                padding: const EdgeInsets.all(10.0),
-                                child: const Text('Add',
-                                    style: TextStyle(fontSize: 20)),
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                GFButton(
+                                  color: GFColors.SUCCESS,
+                                  shape: GFButtonShape.square,
+                                  splashColor: GFColors.SUCCESS,
+                                  size: GFSize.LARGE,
+                                  type: GFButtonType.outline,
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                    final snackBar = SnackBar(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10)),
+                                        ),
+                                        elevation: 6.0,
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text('Your review is added'));
+                                    _scaffoldKey.currentState
+                                        .showSnackBar(snackBar);
+
+                                    await Provider.of<Meals>(context,
+                                            listen: false)
+                                        .addReview(selectedMeal.id,
+                                            _reviewController.text.toString());
+                                    setState(() {});
+                                    _scaffoldKey.currentState
+                                        .hideCurrentSnackBar();
+                                  },
+                                  text: 'Add',
+                                ),
+                                GFButton(
+                                  color: GFColors.DANGER,
+                                  shape: GFButtonShape.square,
+                                  splashColor: GFColors.DANGER,
+                                  size: GFSize.LARGE,
+                                  type: GFButtonType.outline,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  text: 'Cancel',
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -277,6 +349,11 @@ class _MealDetailScreenState extends State<MealDetailScreen> {
                           selectedMeal.id, authData.token, authData.userId);
                     });
                     final snackBar = SnackBar(
+                        elevation: 6.0,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
                         content: selectedMeal.isFavorite
                             ? Text('Meal added to favorites')
                             : Text('Meal removed from favorites'));

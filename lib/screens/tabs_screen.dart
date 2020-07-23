@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './favourites_screen.dart';
 import './categories_screen.dart';
 import '../widgets/main_drawer.dart';
-import '../providers/meal.dart';
+import 'package:getwidget/getwidget.dart';
 
 class TabScreen extends StatefulWidget {
   /*final List<Meal>favoriteMeals;
@@ -42,9 +42,9 @@ class _TabScreenState extends State<TabScreen> {
       body: _pages[_selectedPageIndex]['page'],
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
-        backgroundColor: Theme.of(context).accentColor,
-        unselectedItemColor: Colors.white,
-        selectedItemColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Colors.white,
         currentIndex: _selectedPageIndex,
         type: BottomNavigationBarType.fixed,
         items: [
